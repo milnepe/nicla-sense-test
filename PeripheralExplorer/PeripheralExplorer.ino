@@ -124,10 +124,6 @@ void exploreService(BLEService service) {
 }
 
 void exploreCharacteristic(BLECharacteristic characteristic) {
-  // if(!strcmp(characteristic.uuid(), "19b10000-2001-537e-4f6c-d104768a1214")){
-  //   return;
-  // }
-  // print the UUID and properties of the characteristic
   Serial.print("\tCharacteristic ");
   Serial.print(characteristic.uuid());
   Serial.print(", properties 0x");
@@ -140,32 +136,38 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
 
     if (characteristic.valueLength() > 0) {
       if (characteristic.uuid() == String("19b10000-2001-537e-4f6c-d104768a1214")) {
-        float temperature = BLEFloatCharateristic_to_float(characteristic);
+        float temperature = 0;
+        BLECharateristic_to_value(characteristic, &temperature);
         Serial.print(" Temperature: ");
         Serial.print(temperature);
       }
       if (characteristic.uuid() == String("19b10000-3001-537e-4f6c-d104768a1214")) {
-        uint8_t humidity = BLEUnsignedIntCharacteristic_to_uint8(characteristic);
+        uint8_t humidity = 0;
+        BLECharateristic_to_value(characteristic, &humidity);
         Serial.print(" Humidity: ");
         Serial.print(humidity);
       }
       if (characteristic.uuid() == String("19b10000-4001-537e-4f6c-d104768a1214")) {
-        float pressure = BLEFloatCharateristic_to_float(characteristic);
+        float pressure = 0;
+        BLECharateristic_to_value(characteristic, &pressure);
         Serial.print(" Pressure: ");
         Serial.print(pressure);
       }
       if (characteristic.uuid() == String("19b10000-9001-537e-4f6c-d104768a1214")) {
-        float air_quality = BLEFloatCharateristic_to_float(characteristic);
+        float air_quality = 0;
+        BLECharateristic_to_value(characteristic, &air_quality);
         Serial.print(" Air Quality: ");
         Serial.print(air_quality);
       }
       if (characteristic.uuid() == String("19b10000-9002-537e-4f6c-d104768a1214")) {
-        uint32_t co2 = BLEIntCharacteristic_to_uint32(characteristic);
+        uint32_t co2 = 0;
+        BLECharateristic_to_value(characteristic, &co2);        
         Serial.print(" CO2: ");
         Serial.print(co2);
       }
       if (characteristic.uuid() == String("19b10000-9003-537e-4f6c-d104768a1214")) {
-        uint32_t gas = BLEIntCharacteristic_to_uint32(characteristic);
+        uint32_t gas = 0;
+        BLECharateristic_to_value(characteristic, &gas);  
         Serial.print(" Gas: ");
         Serial.print(gas);
       }
@@ -210,38 +212,12 @@ void printData(const unsigned char data[], int length) {
   }
 }
 
-uint8_t BLEUnsignedIntCharacteristic_to_uint8(BLECharacteristic characteristic) {
-  uint8_t value = 0;
+void BLECharateristic_to_value(BLECharacteristic characteristic, void *value) {
   if (characteristic.valueLength() == 4) {
-    char *buffer = (char *)&value;
+    char *buffer = (char *)value;
     buffer[0] = characteristic.value()[0];  //  MMSB
     buffer[1] = characteristic.value()[1];  //  MLSB
     buffer[2] = characteristic.value()[2];  //  LMSB
     buffer[3] = characteristic.value()[3];  //  LLSB
   }
-  return value;
-}
-
-uint32_t BLEIntCharacteristic_to_uint32(BLECharacteristic characteristic) {
-  uint32_t value = 0;
-  if (characteristic.valueLength() == 4) {
-    char *buffer = (char *)&value;
-    buffer[0] = characteristic.value()[0];  //  MMSB
-    buffer[1] = characteristic.value()[1];  //  MLSB
-    buffer[2] = characteristic.value()[2];  //  LMSB
-    buffer[3] = characteristic.value()[3];  //  LLSB
-  }
-  return value;
-}
-
-float BLEFloatCharateristic_to_float(BLECharacteristic characteristic) {
-  float value = 0;
-  if (characteristic.valueLength() == 4) {
-    char *buffer = (char *)&value;
-    buffer[0] = characteristic.value()[0];  //  MMSB
-    buffer[1] = characteristic.value()[1];  //  MLSB
-    buffer[2] = characteristic.value()[2];  //  LMSB
-    buffer[3] = characteristic.value()[3];  //  LLSB
-  }
-  return value;
 }
