@@ -2,7 +2,7 @@
 #define _FLOOD_API_H_
 
 // #include <WiFiNINA.h>
-#include <ArduinoJson.h>
+// #include <ArduinoJson.h>
 #include "magnet_config.h"
 #include "led.h"
 #include "buzzer.h"
@@ -16,26 +16,22 @@ enum warning_levels { INIT = -1,
                       FLOOD_WARNING,
                       FLOOD_ALERT,
                       NO_LONGER };
-enum modes { DEMO_MODE,
-             STD_MODE,
-             REPLAY_MODE };
 
-struct floodWarning {
+struct niclaData {
   char time_raised[DATESTR_LEN] = { '\0' };
   warning_levels severityLevel = NONE;
-  char flood_area_id[FLOOD_AREA_LEN] = { '\0' };
+  float temperature = 0;
 };
 
 class NiclaAPI {
 public:
-  floodWarning warning;  // Nicla warning data
+  niclaData warning;  // Nicla warning data
   int state;
   NiclaAPI();
 public:
   void init();
   int updateState(warning_levels state);
   void getData();
-  void demo(modes m);
 };
 
 #endif

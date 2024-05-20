@@ -1,7 +1,7 @@
 #include "NiclaAPI.h"
 
 // Nicla warning data
-//static floodWarning warning;
+static niclaData warning;
 NiclaAPI::NiclaAPI() {
 }
 
@@ -37,33 +37,6 @@ int NiclaAPI::updateState(warning_levels state) {
     }
   }
   return state;
-}
-
-// Advance through states and wrap around
-void NiclaAPI::demo(modes m) {
-  // Inject mock timestamp
-  memcpy(warning.time_raised, "2023-01-01 00:01:00", DATESTR_LEN - 1);
-  static warning_levels state = NONE;
-  warning.severityLevel = state;
-  Serial.println(warning.severityLevel);
-  updateState(warning.severityLevel);
-  switch (state) {
-    case NONE:
-      state = FLOOD_ALERT;
-      break;
-    case SEVERE_FLOOD_WARNING:
-      state = NO_LONGER;
-      break;
-    case FLOOD_WARNING:
-      state = SEVERE_FLOOD_WARNING;
-      break;
-    case FLOOD_ALERT:
-      state = FLOOD_WARNING;
-      break;
-    case NO_LONGER:
-      state = NONE;
-      break;
-  }
 }
 
 // void NiclaAPI::getData() {

@@ -1,6 +1,8 @@
 #ifndef _FLOOD_LED_H_
 #define _FLOOD_LED_H_
 
+#include <Arduino.h>
+
 // LEDs
 #define L1_RED_PIN 6
 #define L2_AMBER_PIN 9

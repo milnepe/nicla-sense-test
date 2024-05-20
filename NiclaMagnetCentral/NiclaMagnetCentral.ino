@@ -29,15 +29,11 @@
 #define B5_PIN 17
 #define B6_PIN 16
 
-modes mode = STD_MODE;
-
 const char *soft_version = "0.1.0";
 
 NiclaAPI myNiclaAPI = NiclaAPI();
 
 NiclaMagnetDisplay epd = NiclaMagnetDisplay(&myNiclaAPI);
-
-// int status = WL_IDLE_STATUS;
 
 void setup() {
   led_init();
@@ -97,15 +93,17 @@ void loop() {
     }
   }
   // Try to reconnect
+  rgb_colour(RED);
+  epd.bleOn = false;
   delay(2000);
   BLE.scan();
 }
 
 void doUpdate() {
-  myNiclaAPI.getData();
-  myNiclaAPI.updateState(myNiclaAPI.warning.severityLevel);
+  // myNiclaAPI.getData();
+  // myNiclaAPI.updateState(myNiclaAPI.warning.severityLevel);
   epd.updateDisplay();
-  printData();
+  // printData();
 }
 
 // Debug output
@@ -126,11 +124,11 @@ void explorerPeripheral(BLEDevice peripheral) {
 
   if (peripheral.connect()) {
     rgb_colour(GREEN);
-    epd.wifiOn = true;
+    epd.bleOn = true;
     Serial.println("Connected");
   } else {
     rgb_colour(RED);
-    epd.wifiOn = false;
+    epd.bleOn = false;
     Serial.println("Failed to connect!");
     return;
   }
@@ -160,7 +158,8 @@ void explorerPeripheral(BLEDevice peripheral) {
 
       exploreService(service);
     }
-    delay(5000);
+    doUpdate();
+    delay(10000);
   }
 
   Serial.println();
@@ -199,8 +198,9 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
       if (characteristic.uuid() == String("19b10000-2001-537e-4f6c-d104768a1214")) {
         float temperature = 0;
         BLECharateristic_to_value(characteristic, &temperature);
+        myNiclaAPI.warning.temperature = temperature;
         Serial.print(" Temperature: ");
-        Serial.print(temperature);
+        Serial.print(myNiclaAPI.warning.temperature);
       }
       if (characteristic.uuid() == String("19b10000-3001-537e-4f6c-d104768a1214")) {
         uint8_t humidity = 0;

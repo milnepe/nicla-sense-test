@@ -74,6 +74,7 @@ void NiclaMagnetDisplay::updateDisplay() {
   _epd.DisplayFrame();
 
   delay(500);
+  // Map background image .h files to levels
   switch (severityLevel) {
     case NONE:
       _epd.SetFrameMemory_Base(epd_flood_warning_removed);
@@ -139,9 +140,8 @@ void NiclaMagnetDisplay::updateDisplay() {
   _paint.SetRotate(ROTATE_180);
 
   _paint.Clear(UNCOLORED);
-  if (demoOn) {
-    _paint.DrawStringAt(0, 0, "", &Font16, COLORED);
-  } else if (wifiOn) {
+
+  if (bleOn) {
     _paint.DrawStringAt(0, 0, "Wifi", &Font16, COLORED);
   } else {
     _paint.DrawStringAt(0, 0, "", &Font16, COLORED);

@@ -20,8 +20,7 @@
 
 class NiclaMagnetDisplay {
   public:
-  bool wifiOn = false;
-  bool demoOn = false;
+  bool bleOn = false;
   unsigned char image[1024];
   Epd _epd; // default reset: 8, dc: 9, cs: 10, busy: 7
   Paint _paint = Paint(image, 0, 0);
