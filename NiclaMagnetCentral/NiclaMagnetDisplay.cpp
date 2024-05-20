@@ -34,7 +34,7 @@ void NiclaMagnetDisplay::showGreeting(void) {
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 120, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  _paint.DrawStringAt(0, 4, "Concept:", &Font16, COLORED);
+  _paint.DrawStringAt(0, 4, "Pete Wood", &Font16, COLORED);
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 80, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
@@ -42,11 +42,15 @@ void NiclaMagnetDisplay::showGreeting(void) {
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 60, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  _paint.DrawStringAt(0, 0, "Code:", &Font16, COLORED);
+  _paint.DrawStringAt(0, 4, "Pete Milne", &Font16, COLORED);
+  _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 40, _paint.GetWidth(), _paint.GetHeight());
+
+  _paint.Clear(UNCOLORED);
+  _paint.DrawStringAt(0, 4, "Nat Ibagon", &Font16, COLORED);
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 20, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  _paint.DrawStringAt(0, 0, "Pete Milne", &Font16, COLORED);
+  _paint.DrawStringAt(0, 4, "Simon Desir", &Font16, COLORED);
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 0, _paint.GetWidth(), _paint.GetHeight());
 
   _epd.DisplayFrame_Partial();
