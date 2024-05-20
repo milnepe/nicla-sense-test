@@ -94,13 +94,11 @@ void loop() {
       BLE.stopScan();
 
       explorerPeripheral(peripheral);
-
-      // peripheral disconnected, we are done
-      while (1) {
-        // do nothing
-      }
     }
   }
+  // Try to reconnect
+  delay(2000);
+  BLE.scan();
 }
 
 void doUpdate() {
