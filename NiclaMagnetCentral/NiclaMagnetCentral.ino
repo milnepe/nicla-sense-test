@@ -14,7 +14,7 @@
   Version 3, 29 June 2007
 */
 
-#include <EasyButton.h>
+// #include <EasyButton.h>
 #include "NiclaAPI.h"
 #include "NiclaMagnetDisplay.h"
 #include "led.h"
@@ -31,20 +31,13 @@
 
 modes mode = STD_MODE;
 
-const char* soft_version = "0.1.0";
+const char *soft_version = "0.1.0";
 
 NiclaAPI myNiclaAPI = NiclaAPI();
 
 NiclaMagnetDisplay epd = NiclaMagnetDisplay(&myNiclaAPI);
 
 // int status = WL_IDLE_STATUS;
-
-EasyButton button1(B1_PIN);
-EasyButton button2(B2_PIN);
-EasyButton button3(B3_PIN);
-EasyButton button4(B4_PIN);
-EasyButton button5(B5_PIN);
-EasyButton button6(B6_PIN);
 
 void setup() {
   led_init();
@@ -72,46 +65,16 @@ void setup() {
   Serial.print("Starting client version: ");
   Serial.println(soft_version);
 
-  // Initialize buttons
-  button1.begin();
-  button1.onPressed(dry);
-  button2.begin();
-  button2.onPressed(rain);  // Place holder
-  button3.begin();
-  button3.onPressed(flood);  // Place holder
-  button4.begin();
-  button4.onPressed(replay);
-  button4.onPressedFor(2000, buzzer_off);  // Cancel buzzer
-  button5.begin();
-  button6.begin();
-  button6.onPressed(clock_sync_ap_mode);  // Place holder
-
   // Setup display and show greeting
   epd.initDisplay();
   epd.showGreeting();
 
   myNiclaAPI.init();
 
-  // Hold down B5 while pressing reset to enter demo mode
-  // Press reset to exit back to standard mode
-  if (button5.isPressed()) {
-    mode = DEMO_MODE;
-    rgb_colour(RED);
-    Serial.println("Starting demo mode...");
-    doDemo();
-  }
   delay(3000);
 }
 
 void loop() {
-  // Continuously update the button states
-  button1.read();
-  button2.read();
-  button3.read();
-  button4.read();
-  // button5.read(); Read only in setup
-  button6.read();
-
   // check if a peripheral has been discovered
   BLEDevice peripheral = BLE.available();
 
@@ -130,9 +93,6 @@ void loop() {
       // stop scanning
       BLE.stopScan();
 
-      rgb_colour(GREEN);
-      epd.wifiOn = true;
-
       explorerPeripheral(peripheral);
 
       // peripheral disconnected, we are done
@@ -140,35 +100,7 @@ void loop() {
         // do nothing
       }
     }
-  } else {
-    rgb_colour(RED);
-    epd.wifiOn = false;
-    // peripheral disconnected, we are done
-    while (1) {
-      // do nothing
-    }
   }
-
-  // static int status = WL_IDLE_STATUS;
-  // if (WiFi.status() != WL_CONNECTED) {  // Connect wifi
-  //   rgb_colour(RED);
-  //   epd.wifiOn = false;
-  //   reconnectWiFi();
-  //   delay(2000);
-  //   if (WiFi.status() == WL_CONNECTED) {
-  //     rgb_colour(GREEN);
-  //     epd.wifiOn = true;
-  //     Serial.println("Wifi connected...");
-  //     doUpdate();  // Initial update
-  //   }
-  // }
-  // unsigned long now = millis();
-  // static unsigned long lastApiAttemp = 0;
-  // if ((now - lastApiAttemp > ALERT_INTERVAL) || (mode == REPLAY_MODE)) {
-  //   mode = STD_MODE;  // Clear replay
-  //   doUpdate();
-  //   lastApiAttemp = now;
-  // }
 }
 
 void doUpdate() {
@@ -176,73 +108,6 @@ void doUpdate() {
   myNiclaAPI.updateState(myNiclaAPI.warning.severityLevel);
   epd.updateDisplay();
   printData();
-}
-
-void doDemo() {
-  epd.demoOn = true;
-  while (1) {
-    button1.read();
-    button2.read();
-    button3.read();
-    button4.read();
-    // button5.read(); Read only in setup
-    button6.read();
-    unsigned long now = millis();
-    static unsigned long lastUpdate = 0;
-    if (now - lastUpdate > DEMO_INTERVAL) {
-      buzzer_off();
-      myNiclaAPI.demo(DEMO_MODE);
-      epd.updateDisplay();
-      lastUpdate = millis();
-    }
-  }
-}
-
-// int reconnectWiFi() {
-//   // WL_IDLE_STATUS     = 0
-//   // WL_NO_SSID_AVAIL   = 1
-//   // WL_SCAN_COMPLETED  = 2
-//   // WL_CONNECTED       = 3
-//   // WL_CONNECT_FAILED  = 4
-//   // WL_CONNECTION_LOST = 5
-//   // WL_DISCONNECTED    = 6
-
-//   WiFi.disconnect();  // Force a disconnect
-//   delay(1000);
-//   WiFi.begin(SECRET_SSID, SECRET_PASS);
-//   return WiFi.status();
-// }
-
-// Button callbacks
-void dry() {
-  Serial.println("B1 button pressed...");
-  bip();
-}
-
-void rain() {
-  Serial.println("B2 button pressed...");
-  bip();
-}
-
-void flood() {
-  Serial.println("B3 button pressed...");
-  bip();
-}
-
-void replay() {
-  Serial.println("B4 button pressed...");
-  mode = REPLAY_MODE;
-  bip();
-}
-
-void buzzerOff() {
-  Serial.println("B4 button held...");
-  buzzer_off();
-}
-
-void clock_sync_ap_mode() {
-  Serial.println("B6 button pressed...");
-  bip();
 }
 
 // Debug output
@@ -262,8 +127,12 @@ void explorerPeripheral(BLEDevice peripheral) {
   Serial.println("Connecting ...");
 
   if (peripheral.connect()) {
+    rgb_colour(GREEN);
+    epd.wifiOn = true;
     Serial.println("Connected");
   } else {
+    rgb_colour(RED);
+    epd.wifiOn = false;
     Serial.println("Failed to connect!");
     return;
   }
@@ -286,11 +155,14 @@ void explorerPeripheral(BLEDevice peripheral) {
   Serial.println(peripheral.appearance(), HEX);
   Serial.println();
 
-  // loop the services of the peripheral and explore each
-  for (int i = 0; i < peripheral.serviceCount(); i++) {
-    BLEService service = peripheral.service(i);
+  while (BLE.connected()) {
+    // loop the services of the peripheral and explore each
+    for (int i = 0; i < peripheral.serviceCount(); i++) {
+      BLEService service = peripheral.service(i);
 
-    exploreService(service);
+      exploreService(service);
+    }
+    delay(5000);
   }
 
   Serial.println();
@@ -352,13 +224,13 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
       }
       if (characteristic.uuid() == String("19b10000-9002-537e-4f6c-d104768a1214")) {
         uint32_t co2 = 0;
-        BLECharateristic_to_value(characteristic, &co2);        
+        BLECharateristic_to_value(characteristic, &co2);
         Serial.print(" CO2: ");
         Serial.print(co2);
       }
       if (characteristic.uuid() == String("19b10000-9003-537e-4f6c-d104768a1214")) {
         uint32_t gas = 0;
-        BLECharateristic_to_value(characteristic, &gas);  
+        BLECharateristic_to_value(characteristic, &gas);
         Serial.print(" Gas: ");
         Serial.print(gas);
       }
@@ -366,28 +238,6 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
       printData(characteristic.value(), characteristic.valueLength());
     }
   }
-  Serial.println();
-
-  // loop the descriptors of the characteristic and explore each
-  // for (int i = 0; i < characteristic.descriptorCount(); i++) {
-  //   BLEDescriptor descriptor = characteristic.descriptor(i);
-
-  //   exploreDescriptor(descriptor);
-  // }
-}
-
-void exploreDescriptor(BLEDescriptor descriptor) {
-  // print the UUID of the descriptor
-  Serial.print("\t\tDescriptor ");
-  Serial.print(descriptor.uuid());
-
-  // read the descriptor value
-  descriptor.read();
-
-  // print out the value of the descriptor
-  Serial.print(", value 0x");
-  printData(descriptor.value(), descriptor.valueLength());
-
   Serial.println();
 }
 
