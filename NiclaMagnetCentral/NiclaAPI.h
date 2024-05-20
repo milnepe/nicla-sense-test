@@ -20,7 +20,9 @@ enum warning_levels { INIT = -1,
 struct niclaData {
   char time_raised[DATESTR_LEN] = { '\0' };
   warning_levels severityLevel = NONE;
+  float pressure = 0;
   float temperature = 0;
+  float air_quality = 0;
 };
 
 class NiclaAPI {

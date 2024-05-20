@@ -159,6 +159,7 @@ void explorerPeripheral(BLEDevice peripheral) {
       exploreService(service);
     }
     doUpdate();
+    while (1);
     delay(10000);
   }
 
@@ -211,14 +212,16 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
       if (characteristic.uuid() == String("19b10000-4001-537e-4f6c-d104768a1214")) {
         float pressure = 0;
         BLECharateristic_to_value(characteristic, &pressure);
+        myNiclaAPI.warning.pressure = pressure;        
         Serial.print(" Pressure: ");
-        Serial.print(pressure);
+        Serial.print(myNiclaAPI.warning.pressure);
       }
       if (characteristic.uuid() == String("19b10000-9001-537e-4f6c-d104768a1214")) {
         float air_quality = 0;
         BLECharateristic_to_value(characteristic, &air_quality);
+        myNiclaAPI.warning.air_quality = air_quality; 
         Serial.print(" Air Quality: ");
-        Serial.print(air_quality);
+        Serial.print(myNiclaAPI.warning.air_quality);
       }
       if (characteristic.uuid() == String("19b10000-9002-537e-4f6c-d104768a1214")) {
         uint32_t co2 = 0;
