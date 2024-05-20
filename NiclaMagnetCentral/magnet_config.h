@@ -1,6 +1,9 @@
+// Nicla name
+#define NICLA_NAME "NiclaSenseME-C059"
+
 // Your WiFi settings
-#define SECRET_SSID "your-ssid"
-#define SECRET_PASS "your-wifi-key"
+// #define SECRET_SSID "your-ssid"
+// #define SECRET_PASS "your-wifi-key"
 
 // Your flood area code from Gov.co.uk Nicla Warning Service
 // Nicla warning for Keswick Campsite
