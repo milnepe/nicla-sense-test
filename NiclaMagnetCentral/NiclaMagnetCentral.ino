@@ -1,13 +1,8 @@
 /*
-  Arduino Nano 33 IoT client for Gov.co.uk Flood Warning Service
-
-These APIs are provided as open data under the Open Government Licence with no requirement for registration.
-If you make use of this data please acknowledge this with the following attribution statement:
-
-"this uses Environment Agency flood and river level data from the real-time data API (Beta)"
+  Arduino Nano 33 IoT BLE Central client for Arduino Nicla Sense ME
 
   Install the following libraries using the Arduino Libary Manager:
-  Arduino WiFiNINA https://github.com/arduino-libraries/WiFiNINA
+  ArduinoBLE https://github.com/arduino-libraries/ArduinoBLE
   Benoît Blanchon ArduinoJson https://arduinojson.org/
   Evert-arias EasyButton https://github.com/evert-arias/EasyButton
 
@@ -35,7 +30,7 @@ If you make use of this data please acknowledge this with the following attribut
 
 modes mode = STD_MODE;
 
-const char* soft_version = "0.4.1";
+const char* soft_version = "0.1.0";
 
 FloodAPI myFloodAPI = FloodAPI();
 
