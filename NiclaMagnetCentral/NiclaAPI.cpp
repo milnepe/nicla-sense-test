@@ -1,15 +1,15 @@
-#include "FloodAPI.h"
+#include "NiclaAPI.h"
 
-// Flood warning data
+// Nicla warning data
 //static floodWarning warning;
-FloodAPI::FloodAPI() {
+NiclaAPI::NiclaAPI() {
 }
 
-void FloodAPI::init() {
+void NiclaAPI::init() {
   state = INIT;
 }
 
-int FloodAPI::updateState(warning_levels state) {
+int NiclaAPI::updateState(warning_levels state) {
   static warning_levels previous_state = NONE;
   if (state != previous_state) {
     previous_state = state;
@@ -40,7 +40,7 @@ int FloodAPI::updateState(warning_levels state) {
 }
 
 // Advance through states and wrap around
-void FloodAPI::demo(modes m) {
+void NiclaAPI::demo(modes m) {
   // Inject mock timestamp
   memcpy(warning.time_raised, "2023-01-01 00:01:00", DATESTR_LEN - 1);
   static warning_levels state = NONE;
@@ -66,7 +66,7 @@ void FloodAPI::demo(modes m) {
   }
 }
 
-void FloodAPI::getData() {
+void NiclaAPI::getData() {
   WiFiClient client;
   // Connect to host
   Serial.println("Connecting to environment.data.gov.uk");
@@ -129,5 +129,5 @@ void FloodAPI::getData() {
   // Close the connection to the server
   client.stop();
 
-  Serial.println("Flood data received!");
+  Serial.println("Nicla data received!");
 }

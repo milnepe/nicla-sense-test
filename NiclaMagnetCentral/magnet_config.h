@@ -2,8 +2,8 @@
 #define SECRET_SSID "your-ssid"
 #define SECRET_PASS "your-wifi-key"
 
-// Your flood area code from Gov.co.uk Flood Warning Service
-// Flood warning for Keswick Campsite
+// Your flood area code from Gov.co.uk Nicla Warning Service
+// Nicla warning for Keswick Campsite
 #define AREA_CODE "011FWFNC6KC"
 
 // Your time intervals

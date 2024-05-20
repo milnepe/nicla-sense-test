@@ -1,11 +1,11 @@
-#include "FloodMagnetDisplay.h"
+#include "NiclaMagnetDisplay.h"
 
-// Flood warning text
-static char w1[5][12] = { "No Flood", "DANGER TO", "Flooding is", "Flooding is", "Warning no" };
+// Nicla warning text
+static char w1[5][12] = { "No Nicla", "DANGER TO", "Niclaing is", "Niclaing is", "Warning no" };
 static char w2[5][12] = { "Warnings", "LIFE", "Expected", "Possible", "Longer in" };
 static char w3[5][12] = { "", "", "", "", "Force" };
 
-void FloodMagnetDisplay::initDisplay(void) {
+void NiclaMagnetDisplay::initDisplay(void) {
   if (_epd.Init() != 0) {
     return;
   }
@@ -20,13 +20,13 @@ void FloodMagnetDisplay::initDisplay(void) {
   _epd.DisplayFrame();
 }
 
-void FloodMagnetDisplay::showGreeting(void) {
+void NiclaMagnetDisplay::showGreeting(void) {
   _paint.SetWidth(120);
   _paint.SetHeight(32);
   _paint.SetRotate(ROTATE_180);
 
   _paint.Clear(UNCOLORED);
-  _paint.DrawStringAt(0, 4, "  Flood  ", &Font16, COLORED);
+  _paint.DrawStringAt(0, 4, "  Nicla  ", &Font16, COLORED);
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 140, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
@@ -52,7 +52,7 @@ void FloodMagnetDisplay::showGreeting(void) {
   _epd.DisplayFrame_Partial();
 }
 
-void FloodMagnetDisplay::updateDisplay() {
+void NiclaMagnetDisplay::updateDisplay() {
   Serial.println("Updating display...");
   int severityLevel = _magnet->warning.severityLevel;
   // Index warning string based on severity level

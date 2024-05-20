@@ -8,7 +8,7 @@
 #include "buzzer.h"
 
 #define DATESTR_LEN 17     // "2022-12-19T15:20:31" -> "2022-12-19 15:20"
-#define FLOOD_AREA_LEN 12  // Flood area description
+#define FLOOD_AREA_LEN 12  // Nicla area description
 
 enum warning_levels { INIT = -1,
                       NONE,
@@ -26,11 +26,11 @@ struct floodWarning {
   char flood_area_id[FLOOD_AREA_LEN] = { '\0' };
 };
 
-class FloodAPI {
+class NiclaAPI {
 public:
-  floodWarning warning;  // Flood warning data
+  floodWarning warning;  // Nicla warning data
   int state;
-  FloodAPI();
+  NiclaAPI();
 public:
   void init();
   int updateState(warning_levels state);

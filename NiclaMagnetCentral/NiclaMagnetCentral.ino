@@ -15,8 +15,8 @@
 */
 
 #include <EasyButton.h>
-#include "FloodAPI.h"
-#include "FloodMagnetDisplay.h"
+#include "NiclaAPI.h"
+#include "NiclaMagnetDisplay.h"
 #include "led.h"
 #include "buzzer.h"
 
@@ -32,9 +32,9 @@ modes mode = STD_MODE;
 
 const char* soft_version = "0.1.0";
 
-FloodAPI myFloodAPI = FloodAPI();
+NiclaAPI myNiclaAPI = NiclaAPI();
 
-FloodMagnetDisplay epd = FloodMagnetDisplay(&myFloodAPI);
+NiclaMagnetDisplay epd = NiclaMagnetDisplay(&myNiclaAPI);
 
 // int status = WL_IDLE_STATUS;
 
@@ -77,7 +77,7 @@ void setup() {
   epd.initDisplay();
   epd.showGreeting();
 
-  myFloodAPI.init();
+  myNiclaAPI.init();
 
   // Hold down B5 while pressing reset to enter demo mode
   // Press reset to exit back to standard mode
@@ -122,8 +122,8 @@ void loop() {
 }
 
 void doUpdate() {
-  myFloodAPI.getData();
-  myFloodAPI.updateState(myFloodAPI.warning.severityLevel);
+  myNiclaAPI.getData();
+  myNiclaAPI.updateState(myNiclaAPI.warning.severityLevel);
   epd.updateDisplay();
   printData();
 }
@@ -141,7 +141,7 @@ void doDemo() {
     static unsigned long lastUpdate = 0;
     if (now - lastUpdate > DEMO_INTERVAL) {
       buzzer_off();
-      myFloodAPI.demo(DEMO_MODE);
+      myNiclaAPI.demo(DEMO_MODE);
       epd.updateDisplay();
       lastUpdate = millis();
     }
@@ -197,12 +197,12 @@ void clock_sync_ap_mode() {
 
 // Debug output
 void printData() {
-  Serial.print("Flood Area: https://check-for-flooding.service.gov.uk/target-area/");
-  Serial.println(myFloodAPI.warning.flood_area_id);
+  Serial.print("Nicla Area: https://check-for-flooding.service.gov.uk/target-area/");
+  Serial.println(myNiclaAPI.warning.flood_area_id);
 
   Serial.print("Warning Level: ");
-  Serial.println(myFloodAPI.warning.severityLevel);
+  Serial.println(myNiclaAPI.warning.severityLevel);
 
   Serial.print("Time Raised: ");
-  Serial.println(myFloodAPI.warning.time_raised);
+  Serial.println(myNiclaAPI.warning.time_raised);
 }
