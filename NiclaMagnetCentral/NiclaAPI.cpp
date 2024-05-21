@@ -6,35 +6,31 @@ NiclaAPI::NiclaAPI() {
 }
 
 void NiclaAPI::init() {
-  state = INIT;
+  level = NONE;
 }
 
-int NiclaAPI::updateState(warning_levels state) {
-  static warning_levels previous_state = NONE;
-  if (state != previous_state) {
-    previous_state = state;
-    switch (state) {
-      case NONE:
+int NiclaAPI::updateWarning(warning_levels level) {
+  static warning_levels previous_level = NONE;
+  if (level != previous_level) {
+    previous_level = level;
+    switch (level) {
+      case NORMAL:
         led_colour(GREEN);
         break;
-      case SEVERE_FLOOD_WARNING:
+      case REPLACE:
         led_colour(RED);
         buzzer_on();
         break;
-      case FLOOD_WARNING:
-        led_colour(RED);
-        buzzer_on();
-        break;
-      case FLOOD_ALERT:
+      case MONITOR:
         led_colour(AMBER);
         buzzer_on();
         break;
-      case NO_LONGER:
+      case NONE:
         led_colour(GREEN);
         break;
       default:
         break;
     }
   }
-  return state;
+  return level;
 }

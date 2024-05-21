@@ -3,8 +3,6 @@
 
   Install the following libraries using the Arduino Libary Manager:
   ArduinoBLE https://github.com/arduino-libraries/ArduinoBLE
-  Benoît Blanchon ArduinoJson https://arduinojson.org/
-  Evert-arias EasyButton https://github.com/evert-arias/EasyButton
 
   Author: Peter Milne
   Date: 22 March 2023

@@ -1,5 +1,5 @@
-#ifndef _FLOOD_LED_H_
-#define _FLOOD_LED_H_
+#ifndef _NICLA_LED_H_
+#define _NICLA_LED_H_
 
 #include <Arduino.h>
 

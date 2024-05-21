@@ -1,7 +1,7 @@
 #include "NiclaMagnetDisplay.h"
 
 // Nicla warning text
-static char warning_text[4][12] = { "NORMAL", "MONITOR", "CHANGE", '\0' };
+static char warning_text[4][12] = { "NORMAL", "MONITOR", "REPLACE", '\0' };
 
 void NiclaMagnetDisplay::initDisplay(void) {
   if (_epd.Init() != 0) {
@@ -57,14 +57,7 @@ void NiclaMagnetDisplay::showGreeting(void) {
 void NiclaMagnetDisplay::updateState() {
   Serial.println("Updating state image...");
   int severityLevel = _magnet->data.severityLevel;
-  // Index warning string based on severity level
-  //int warning_idx = severityLevel ? severityLevel : 0;
-  //  char single_digit[] = {'0', '\0'};
-  //  char double_digit[] = {'0', '0', '\0'};
-  //  char three_digit[] = {'0', '/', '0', '\0'};
-  //  char four_digit[] = {'0', '/', '0', '0',  '\0'};
-  //
-  // Set background
+
   if (_epd.Init() != 0) {
     return;
   }
@@ -77,17 +70,14 @@ void NiclaMagnetDisplay::updateState() {
     case NONE:
       _epd.SetFrameMemory_Base(RSLOGO);
       break;
-    case SEVERE_FLOOD_WARNING:
+    case REPLACE:
       _epd.SetFrameMemory_Base(epd_flood_warning_severe);
       break;
-    case FLOOD_WARNING:
+    case MONITOR:
       _epd.SetFrameMemory_Base(epd_flood_warning);
       break;
-    case FLOOD_ALERT:
+    case NORMAL:
       _epd.SetFrameMemory_Base(epd_flood_alert);
-      break;
-    case NO_LONGER:
-      _epd.SetFrameMemory_Base(epd_flood_warning_removed);
       break;
     default:
       break;

@@ -1,5 +1,5 @@
-#ifndef _FLOOD_BUZZER_H_
-#define _FLOOD_BUZZER_H_
+#ifndef _NICLA_BUZZER_H_
+#define _NICLA_BUZZER_H_
 
 // Pizo buzzer
 #define BUZZER_PIN 15
