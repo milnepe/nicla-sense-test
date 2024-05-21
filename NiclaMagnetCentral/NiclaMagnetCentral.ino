@@ -14,14 +14,13 @@
   Version 3, 29 June 2007
 */
 
-// #include <EasyButton.h>
 #include "NiclaAPI.h"
 #include "NiclaMagnetDisplay.h"
 #include "led.h"
 #include "buzzer.h"
 #include <ArduinoBLE.h>
 
-// Button connections
+// Button connections - not used yet
 #define B1_PIN 21
 #define B2_PIN 20
 #define B3_PIN 19
@@ -39,12 +38,10 @@ void setup() {
   led_init();
   buzzer_init();
 
-  // Initialize Serial Port
   Serial.begin(115200);
   while (!Serial)
     ;
 
-  // begin initialization
   if (!BLE.begin()) {
     Serial.println("starting Bluetooth® Low Energy module failed!");
 
@@ -56,7 +53,6 @@ void setup() {
 
   // start scanning for peripherals
   BLE.scan();
-  // delay(2000);
 
   Serial.print("Starting client version: ");
   Serial.println(soft_version);
@@ -86,10 +82,9 @@ void loop() {
 
     // see if peripheral matches
     if (peripheral.localName() == NICLA_NAME) {
-      // stop scanning
       BLE.stopScan();
 
-      explorerPeripheral(peripheral);
+      explorerPeripheral(peripheral);  // Where the action happens
     }
   }
   // Try to reconnect
@@ -97,25 +92,6 @@ void loop() {
   epd.bleOn = false;
   delay(2000);
   BLE.scan();
-}
-
-// void doUpdate() {
-//   // myNiclaAPI.getData();
-//   // myNiclaAPI.updateState(myNiclaAPI.warning.severityLevel);
-//   epd.updateReadings();
-//   // printData();
-// }
-
-// Debug output
-void printData() {
-  // Serial.print("Nicla Area: https://check-for-flooding.service.gov.uk/target-area/");
-  // Serial.println(myNiclaAPI.warning.flood_area_id);
-
-  Serial.print("Warning Level: ");
-  Serial.println(myNiclaAPI.warning.severityLevel);
-
-  Serial.print("Time Raised: ");
-  Serial.println(myNiclaAPI.warning.time_raised);
 }
 
 void explorerPeripheral(BLEDevice peripheral) {
@@ -200,9 +176,9 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
       if (characteristic.uuid() == String("19b10000-2001-537e-4f6c-d104768a1214")) {
         float temperature = 0;
         BLECharateristic_to_value(characteristic, &temperature);
-        myNiclaAPI.warning.temperature = temperature;
+        myNiclaAPI.data.temperature = temperature;
         Serial.print(" Temperature: ");
-        Serial.print(myNiclaAPI.warning.temperature);
+        Serial.print(myNiclaAPI.data.temperature);
       }
       if (characteristic.uuid() == String("19b10000-3001-537e-4f6c-d104768a1214")) {
         uint8_t humidity = 0;
@@ -213,16 +189,16 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
       if (characteristic.uuid() == String("19b10000-4001-537e-4f6c-d104768a1214")) {
         float pressure = 0;
         BLECharateristic_to_value(characteristic, &pressure);
-        myNiclaAPI.warning.pressure = pressure;
+        myNiclaAPI.data.pressure = pressure;
         Serial.print(" Pressure: ");
-        Serial.print(myNiclaAPI.warning.pressure);
+        Serial.print(myNiclaAPI.data.pressure);
       }
       if (characteristic.uuid() == String("19b10000-9001-537e-4f6c-d104768a1214")) {
         float air_quality = 0;
         BLECharateristic_to_value(characteristic, &air_quality);
-        myNiclaAPI.warning.air_quality = air_quality;
+        myNiclaAPI.data.air_quality = air_quality;
         Serial.print(" Air Quality: ");
-        Serial.print(myNiclaAPI.warning.air_quality);
+        Serial.print(myNiclaAPI.data.air_quality);
       }
       if (characteristic.uuid() == String("19b10000-9002-537e-4f6c-d104768a1214")) {
         uint32_t co2 = 0;

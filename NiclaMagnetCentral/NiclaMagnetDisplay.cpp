@@ -1,7 +1,7 @@
 #include "NiclaMagnetDisplay.h"
 
 // Nicla warning text
-static char warning[3][12] = { "NORMAL", "MONITOR", "CHANGE" };
+static char warning_text[4][12] = { "NORMAL", "MONITOR", "CHANGE", '\0' };
 
 void NiclaMagnetDisplay::initDisplay(void) {
   if (_epd.Init() != 0) {
@@ -56,7 +56,7 @@ void NiclaMagnetDisplay::showGreeting(void) {
 
 void NiclaMagnetDisplay::updateState() {
   Serial.println("Updating state image...");
-  int severityLevel = _magnet->warning.severityLevel;
+  int severityLevel = _magnet->data.severityLevel;
   // Index warning string based on severity level
   //int warning_idx = severityLevel ? severityLevel : 0;
   //  char single_digit[] = {'0', '\0'};
@@ -98,7 +98,7 @@ void NiclaMagnetDisplay::updateState() {
 
 void NiclaMagnetDisplay::updateReadings() {
   Serial.println("Updating sensor readings...");
-  int severityLevel = _magnet->warning.severityLevel;
+  int severityLevel = _magnet->data.severityLevel;
 
   // Static text
   _paint.SetWidth(120);
@@ -107,7 +107,7 @@ void NiclaMagnetDisplay::updateReadings() {
   _paint.SetRotate(ROTATE_180);
 
   _paint.Clear(UNCOLORED);
-  _paint.DrawStringAt(0, 0, warning[severityLevel], &Font16, COLORED);
+  _paint.DrawStringAt(0, 0, warning_text[severityLevel], &Font16, COLORED);
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 120, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
@@ -115,7 +115,7 @@ void NiclaMagnetDisplay::updateReadings() {
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 100, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  int pressure = (int)(_magnet->warning.pressure);
+  int pressure = (int)(_magnet->data.pressure);
   char pressure_str[] = { '0', '0', '0', '0', 'k', 'P', '\0' };
   pressure_str[0] = pressure / 100 / 10 + '0';
   pressure_str[1] = pressure / 100 % 10 + '0';
@@ -129,7 +129,7 @@ void NiclaMagnetDisplay::updateReadings() {
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 60, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  int temp = (int)(_magnet->warning.temperature * 100);
+  int temp = (int)(_magnet->data.temperature * 100);
   char temperature_str[] = { '0', '0', '.', '0', '0', 'C', '\0' };
   temperature_str[0] = temp / 100 / 10 + '0';
   temperature_str[1] = temp / 100 % 10 + '0';
@@ -143,7 +143,7 @@ void NiclaMagnetDisplay::updateReadings() {
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 20, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  int air_quality = (int)(_magnet->warning.air_quality);
+  int air_quality = (int)(_magnet->data.air_quality);
   char air_quality_str[] = { '0', '0', '\0' };
   air_quality_str[0] = air_quality % 100 / 10 + '0';
   air_quality_str[1] = air_quality % 100 % 10 + '0';

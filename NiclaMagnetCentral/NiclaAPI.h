@@ -1,5 +1,5 @@
-#ifndef _FLOOD_API_H_
-#define _FLOOD_API_H_
+#ifndef _NICLA_API_H_
+#define _NICLA_API_H_
 
 // #include <WiFiNINA.h>
 // #include <ArduinoJson.h>
@@ -27,7 +27,7 @@ struct niclaData {
 
 class NiclaAPI {
 public:
-  niclaData warning;  // Nicla warning data
+  niclaData data;  // Nicla sensor data
   int state;
   NiclaAPI();
 public:
