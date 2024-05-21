@@ -6,7 +6,7 @@ NiclaAPI::NiclaAPI() {
 }
 
 void NiclaAPI::init() {
-  level = NONE;
+  data.severityLevel = NONE;
 }
 
 int NiclaAPI::updateWarning(warning_levels level) {
@@ -19,11 +19,11 @@ int NiclaAPI::updateWarning(warning_levels level) {
         break;
       case REPLACE:
         led_colour(RED);
-        buzzer_on();
+        // buzzer_on();
         break;
       case MONITOR:
         led_colour(AMBER);
-        buzzer_on();
+        // buzzer_on();
         break;
       case NONE:
         led_colour(GREEN);

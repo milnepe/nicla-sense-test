@@ -21,7 +21,7 @@ struct niclaData {
 class NiclaAPI {
 public:
   niclaData data;  // Nicla sensor data
-  int level;
+  // warning_levels level;
   NiclaAPI();
 public:
   void init();

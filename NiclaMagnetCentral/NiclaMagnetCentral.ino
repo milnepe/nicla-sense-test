@@ -133,6 +133,7 @@ void explorerPeripheral(BLEDevice peripheral) {
 
       exploreService(service);
     }
+    myNiclaAPI.updateWarning(myNiclaAPI.data.severityLevel);
     epd.updateReadings();
     // while (1);
     delay(BLE_READ_INTERVAL);
@@ -215,6 +216,15 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
       printData(characteristic.value(), characteristic.valueLength());
     }
   }
+  // Simple state change logic (fort testing)
+  if (myNiclaAPI.data.temperature > 30.00) {
+    myNiclaAPI.data.severityLevel = REPLACE;
+  } else if (myNiclaAPI.data.temperature > 29.00) {
+    myNiclaAPI.data.severityLevel = MONITOR;
+  } else {
+    myNiclaAPI.data.severityLevel = NORMAL;
+  }
+
   Serial.println();
 }
 

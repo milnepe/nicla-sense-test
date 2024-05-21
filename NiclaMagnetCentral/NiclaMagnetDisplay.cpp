@@ -1,7 +1,7 @@
 #include "NiclaMagnetDisplay.h"
 
 // Nicla warning text
-static char warning_text[4][12] = { "NORMAL", "MONITOR", "REPLACE", '\0' };
+static char warning_text[4][12] = { "NONE", "NORMAL", "MONITOR", "REPLACE" };
 
 void NiclaMagnetDisplay::initDisplay(void) {
   if (_epd.Init() != 0) {
