@@ -23,6 +23,7 @@ struct niclaData {
   float pressure = 0;
   float temperature = 0;
   float air_quality = 0;
+  uint32_t co2 = 0;
 };
 
 class NiclaAPI {

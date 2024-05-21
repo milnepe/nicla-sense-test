@@ -108,6 +108,20 @@ void NiclaMagnetDisplay::updateReadings() {
 
   _paint.Clear(UNCOLORED);
   _paint.DrawStringAt(0, 0, warning_text[severityLevel], &Font16, COLORED);
+  _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 170, _paint.GetWidth(), _paint.GetHeight());
+
+  _paint.Clear(UNCOLORED);
+  _paint.DrawStringAt(0, 0, "CO2", &Font16, COLORED);
+  _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 140, _paint.GetWidth(), _paint.GetHeight());
+
+  _paint.Clear(UNCOLORED);
+  int co2 = _magnet->data.co2;
+  char co2_str[] = { '0', '0', '0', 'p', 'p', 'm', '\0' };
+  // co2_str[0] = co2 / 100 / 10 + '0';
+  co2_str[0] = co2 / 100 % 10 + '0';
+  co2_str[1] = co2 % 100 / 10 + '0';
+  co2_str[2] = co2 % 100 % 10 + '0';
+  _paint.DrawStringAt(0, 0, co2_str, &Font12, COLORED);
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 120, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);

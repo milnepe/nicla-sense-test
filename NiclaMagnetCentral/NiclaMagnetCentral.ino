@@ -176,7 +176,7 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
       if (characteristic.uuid() == String("19b10000-2001-537e-4f6c-d104768a1214")) {
         float temperature = 0;
         BLECharateristic_to_value(characteristic, &temperature);
-        myNiclaAPI.data.temperature = temperature;
+        myNiclaAPI.data.temperature = temperature;  // Value passed to display
         Serial.print(" Temperature: ");
         Serial.print(myNiclaAPI.data.temperature);
       }
@@ -203,8 +203,9 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
       if (characteristic.uuid() == String("19b10000-9002-537e-4f6c-d104768a1214")) {
         uint32_t co2 = 0;
         BLECharateristic_to_value(characteristic, &co2);
+        myNiclaAPI.data.co2 = co2;
         Serial.print(" CO2: ");
-        Serial.print(co2);
+        Serial.print(myNiclaAPI.data.co2);
       }
       if (characteristic.uuid() == String("19b10000-9003-537e-4f6c-d104768a1214")) {
         uint32_t gas = 0;
