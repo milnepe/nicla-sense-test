@@ -99,12 +99,12 @@ void loop() {
   BLE.scan();
 }
 
-void doUpdate() {
-  // myNiclaAPI.getData();
-  // myNiclaAPI.updateState(myNiclaAPI.warning.severityLevel);
-  epd.updateDisplay();
-  // printData();
-}
+// void doUpdate() {
+//   // myNiclaAPI.getData();
+//   // myNiclaAPI.updateState(myNiclaAPI.warning.severityLevel);
+//   epd.updateReadings();
+//   // printData();
+// }
 
 // Debug output
 void printData() {
@@ -125,6 +125,7 @@ void explorerPeripheral(BLEDevice peripheral) {
   if (peripheral.connect()) {
     rgb_colour(GREEN);
     epd.bleOn = true;
+    epd.updateState();
     Serial.println("Connected");
   } else {
     rgb_colour(RED);
@@ -158,8 +159,8 @@ void explorerPeripheral(BLEDevice peripheral) {
 
       exploreService(service);
     }
-    doUpdate();
-    while (1);
+    epd.updateReadings();
+    // while (1);
     delay(10000);
   }
 

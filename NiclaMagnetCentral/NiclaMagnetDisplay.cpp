@@ -56,8 +56,8 @@ void NiclaMagnetDisplay::showGreeting(void) {
   _epd.DisplayFrame_Partial();
 }
 
-void NiclaMagnetDisplay::updateDisplay() {
-  Serial.println("Updating display...");
+void NiclaMagnetDisplay::updateState() {
+  Serial.println("Updating state image...");
   int severityLevel = _magnet->warning.severityLevel;
   // Index warning string based on severity level
   //int warning_idx = severityLevel ? severityLevel : 0;
@@ -96,6 +96,48 @@ void NiclaMagnetDisplay::updateDisplay() {
   }
 
   _epd.DisplayFrame();
+}
+
+void NiclaMagnetDisplay::updateReadings() {
+  Serial.println("Updating sensor readings...");
+  int severityLevel = _magnet->warning.severityLevel;
+  // // Index warning string based on severity level
+  // //int warning_idx = severityLevel ? severityLevel : 0;
+  // //  char single_digit[] = {'0', '\0'};
+  // //  char double_digit[] = {'0', '0', '\0'};
+  // //  char three_digit[] = {'0', '/', '0', '\0'};
+  // //  char four_digit[] = {'0', '/', '0', '0',  '\0'};
+  // //
+  // // Set background
+  // if (_epd.Init() != 0) {
+  //   return;
+  // }
+  // _epd.ClearFrameMemory(0xFF);  // bit set = white, bit reset = black
+  // _epd.DisplayFrame();
+
+  // delay(500);
+  // // Map background image .h files to levels
+  // switch (severityLevel) {
+  //   case NONE:
+  //     _epd.SetFrameMemory_Base(RSLOGO);
+  //     break;
+  //   case SEVERE_FLOOD_WARNING:
+  //     _epd.SetFrameMemory_Base(epd_flood_warning_severe);
+  //     break;
+  //   case FLOOD_WARNING:
+  //     _epd.SetFrameMemory_Base(epd_flood_warning);
+  //     break;
+  //   case FLOOD_ALERT:
+  //     _epd.SetFrameMemory_Base(epd_flood_alert);
+  //     break;
+  //   case NO_LONGER:
+  //     _epd.SetFrameMemory_Base(epd_flood_warning_removed);
+  //     break;
+  //   default:
+  //     break;
+  // }
+
+  // _epd.DisplayFrame();
 
   // Static text
   _paint.SetWidth(120);
