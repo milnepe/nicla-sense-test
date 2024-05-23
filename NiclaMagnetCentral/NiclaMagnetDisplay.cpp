@@ -106,11 +106,11 @@ void NiclaMagnetDisplay::updateReadings() {
 
   _paint.Clear(UNCOLORED);
   int co2 = _magnet->data.co2;
-  char co2_str[] = { '0', '0', '0', 'p', 'p', 'm', '\0' };
-  // co2_str[0] = co2 / 100 / 10 + '0';
-  co2_str[0] = co2 / 100 % 10 + '0';
-  co2_str[1] = co2 % 100 / 10 + '0';
-  co2_str[2] = co2 % 100 % 10 + '0';
+  char co2_str[] = { '0', '0', '0', '0', 'p', 'p', 'm', '\0' };
+  co2_str[0] = co2 / 100 / 10 + '0';
+  co2_str[1] = co2 / 100 % 10 + '0';
+  co2_str[2] = co2 % 100 / 10 + '0';
+  co2_str[3] = co2 % 100 % 10 + '0';
   _paint.DrawStringAt(0, 0, co2_str, &Font12, COLORED);
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 120, _paint.GetWidth(), _paint.GetHeight());
 
@@ -120,7 +120,7 @@ void NiclaMagnetDisplay::updateReadings() {
 
   _paint.Clear(UNCOLORED);
   int pressure = (int)(_magnet->data.pressure);
-  char pressure_str[] = { '0', '0', '0', '0', 'k', 'P', '\0' };
+  char pressure_str[] = { '0', '0', '0', '0', 'h', 'P', 'a', '\0' };
   pressure_str[0] = pressure / 100 / 10 + '0';
   pressure_str[1] = pressure / 100 % 10 + '0';
   pressure_str[2] = pressure % 100 / 10 + '0';
@@ -148,9 +148,11 @@ void NiclaMagnetDisplay::updateReadings() {
 
   _paint.Clear(UNCOLORED);
   int air_quality = (int)(_magnet->data.air_quality);
-  char air_quality_str[] = { '0', '0', '\0' };
-  air_quality_str[0] = air_quality % 100 / 10 + '0';
-  air_quality_str[1] = air_quality % 100 % 10 + '0';
+  char air_quality_str[] = { '0', '0', '0', '0', '\0' };
+  air_quality_str[0] = air_quality / 100 / 10 + '0';
+  air_quality_str[1] = air_quality / 100 % 10 + '0';
+  air_quality_str[2] = air_quality % 100 / 10 + '0';
+  air_quality_str[3] = air_quality % 100 % 10 + '0';
   _paint.DrawStringAt(0, 0, air_quality_str, &Font12, COLORED);
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 0, _paint.GetWidth(), _paint.GetHeight());
 

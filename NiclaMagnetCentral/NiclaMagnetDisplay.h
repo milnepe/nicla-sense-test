@@ -15,7 +15,7 @@
 
 #define COLORED 0
 #define UNCOLORED 1
-#define BLE_READ_INTERVAL 10000  // Interval in ms
+#define BLE_READ_INTERVAL 2000  // Interval in ms
 
 
 class NiclaMagnetDisplay {
