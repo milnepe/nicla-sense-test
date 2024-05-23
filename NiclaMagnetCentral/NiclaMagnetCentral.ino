@@ -50,7 +50,8 @@ void setup() {
   Serial.println("Bluetooth® Low Energy Central - Peripheral Explorer");
 
   // start scanning for peripherals
-  BLE.scan();
+  // BLE.scan();
+  BLE.scanForName(NICLA_NAME);
 
   Serial.print("Starting client version: ");
   Serial.println(soft_version);
@@ -217,9 +218,9 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
     }
   }
   // Simple state change logic (fort testing)
-  if (myNiclaAPI.data.temperature > 30.00) {
+  if (myNiclaAPI.data.temperature > 34.00) {
     myNiclaAPI.data.severityLevel = REPLACE;
-  } else if (myNiclaAPI.data.temperature > 29.00) {
+  } else if (myNiclaAPI.data.temperature > 33.00) {
     myNiclaAPI.data.severityLevel = MONITOR;
   } else {
     myNiclaAPI.data.severityLevel = NORMAL;
