@@ -57,6 +57,18 @@ float pressureValue = 0.0f;
 float airQuality = 0.0f;
 uint32_t co2 = 0;
 uint32_t g = 0;  // Gas sensor
+byte rLed = 0x00;
+byte gLed = 0x00;
+byte bLed = 0x00;
+
+// State represented by RGB index
+byte NORMAL[] = { 0x00, 0xFF, 0x00 };   // Green
+byte MONITOR[] = { 0xFF, 0xFF, 0x00 };  // Yellow
+byte REPLACE[] = { 0xFF, 0x00, 0x00 };  // Red
+
+int GOOD = 50;
+int MODERATE = 100;
+int UNHEALTHY = 200;
 
 void setup() {
   Serial.begin(115200);
@@ -146,6 +158,7 @@ void loop() {
     printTime = millis();
 
     updateReadings();
+    updateState(airQuality);
     plotReadings();
   }
 }
@@ -157,6 +170,23 @@ void updateReadings() {
   airQuality = float(bsec.iaq());
   co2 = bsec.co2_eq();
   g = gas.value();
+}
+
+void updateState(float reading) {
+  if (reading > MODERATE) {
+    rLed = REPLACE[0];
+    gLed = REPLACE[1];
+    bLed = REPLACE[2];
+  } else if (reading > GOOD) {
+    rLed = MONITOR[0];
+    gLed = MONITOR[1];
+    bLed = MONITOR[2];
+  } else {  // NORMAL
+    rLed = NORMAL[0];
+    gLed = NORMAL[1];
+    bLed = NORMAL[2];
+  }
+  nicla::leds.setColor(rLed, gLed, bLed);
 }
 
 void plotReadings() {
