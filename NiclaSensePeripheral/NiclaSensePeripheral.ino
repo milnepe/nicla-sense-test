@@ -146,32 +146,27 @@ void loop() {
     printTime = millis();
 
     updateReadings();
+    plotReadings();
   }
 }
 
 void updateReadings() {
   temperatureValue = temperature.value();
-  Serial.print("Temperature: ");
-  Serial.println(temperatureValue);
-
   humidityValue = humidity.value() + 0.5f;  //since we are truncating the float type to a uint8_t, we want to round it
-  Serial.print("Humidity: ");
-  Serial.println(humidityValue);
-
   pressureValue = pressure.value();
-  Serial.print("Pressure: ");
-  Serial.println(pressureValue);
-
   airQuality = float(bsec.iaq());
-  Serial.print("Air quality: ");
-  Serial.println(airQuality);
-
   co2 = bsec.co2_eq();
-  Serial.print("CO2: ");
-  Serial.println(co2);
+  g = gas.value();
+}
 
-  uint32_t g = gas.value();
-  Serial.print("Gas: ");
+void plotReadings() {
+  Serial.print("AQI:");
+  Serial.print(airQuality);
+  Serial.print(",");
+  Serial.print("CO2:");
+  Serial.print(co2);
+  Serial.print(",");
+  Serial.print("Gas:");
   Serial.println(g);
 }
 
