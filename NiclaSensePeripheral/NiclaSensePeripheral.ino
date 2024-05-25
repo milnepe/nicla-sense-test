@@ -51,6 +51,8 @@ Sensor pressure(SENSOR_ID_BARO);
 Sensor gas(SENSOR_ID_GAS);
 SensorBSEC bsec(SENSOR_ID_BSEC);
 
+float temperatureValue = 0.0;
+
 void setup() {
   Serial.begin(115200);
 
@@ -129,8 +131,18 @@ void setup() {
 }
 
 void loop() {
-  while (BLE.connected()) {
-    BHY2.update();
+  static auto printTime = millis();
+
+  if (BLE.connected()) {
+    BHY2.update(100);
+  }
+
+  if (millis() - printTime >= 1000) {
+    printTime = millis();
+
+    temperatureValue = temperature.value();
+    Serial.print("Temperature: ");
+    Serial.println(temperatureValue);
   }
 }
 
@@ -143,9 +155,7 @@ void blePeripheralConnectHandler(BLEDevice central) {
 }
 
 void onTemperatureCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
-  float temperatureValue = temperature.value();
-  Serial.print("Temperature: ");
-  Serial.println(temperatureValue);
+  // Read temperature from buffer
   temperatureCharacteristic.writeValue(temperatureValue);
 }
 
