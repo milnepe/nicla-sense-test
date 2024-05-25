@@ -51,7 +51,12 @@ Sensor pressure(SENSOR_ID_BARO);
 Sensor gas(SENSOR_ID_GAS);
 SensorBSEC bsec(SENSOR_ID_BSEC);
 
-float temperatureValue = 0.0;
+float temperatureValue = 0.0f;
+uint8_t humidityValue = 0;
+float pressureValue = 0.0f;
+float airQuality = 0.0f;
+uint32_t co2 = 0;
+uint32_t g = 0;  // Gas sensor
 
 void setup() {
   Serial.begin(115200);
@@ -140,10 +145,34 @@ void loop() {
   if (millis() - printTime >= 1000) {
     printTime = millis();
 
-    temperatureValue = temperature.value();
-    Serial.print("Temperature: ");
-    Serial.println(temperatureValue);
+    updateReadings();
   }
+}
+
+void updateReadings() {
+  temperatureValue = temperature.value();
+  Serial.print("Temperature: ");
+  Serial.println(temperatureValue);
+
+  humidityValue = humidity.value() + 0.5f;  //since we are truncating the float type to a uint8_t, we want to round it
+  Serial.print("Humidity: ");
+  Serial.println(humidityValue);
+
+  pressureValue = pressure.value();
+  Serial.print("Pressure: ");
+  Serial.println(pressureValue);
+
+  airQuality = float(bsec.iaq());
+  Serial.print("Air quality: ");
+  Serial.println(airQuality);
+
+  co2 = bsec.co2_eq();
+  Serial.print("CO2: ");
+  Serial.println(co2);
+
+  uint32_t g = gas.value();
+  Serial.print("Gas: ");
+  Serial.println(g);
 }
 
 void blePeripheralDisconnectHandler(BLEDevice central) {
@@ -160,37 +189,27 @@ void onTemperatureCharacteristicRead(BLEDevice central, BLECharacteristic charac
 }
 
 void onHumidityCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
-  uint8_t humidityValue = humidity.value() + 0.5f;  //since we are truncating the float type to a uint8_t, we want to round it
-  Serial.print("Humidity: ");
-  Serial.println(humidityValue);
+  // Read humidity from buffer
   humidityCharacteristic.writeValue(humidityValue);
 }
 
 void onPressureCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
-  float pressureValue = pressure.value();
-  Serial.print("Pressure: ");
-  Serial.println(pressureValue);
+  // Read pressure from buffer
   pressureCharacteristic.writeValue(pressureValue);
 }
 
 void onBsecCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
-  float airQuality = float(bsec.iaq());
-  Serial.print("Air quality: ");
-  Serial.println(airQuality);
+  // Read air quality from buffer
   bsecCharacteristic.writeValue(airQuality);
 }
 
 void onCo2CharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
-  uint32_t co2 = bsec.co2_eq();
-  Serial.print("CO2: ");
-  Serial.println(co2);
+  // Read CO2 from buffer
   co2Characteristic.writeValue(co2);
 }
 
 void onGasCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
-  uint32_t g = gas.value();
-  Serial.print("Gas: ");
-  Serial.println(g);
+  // Read gas from buffer
   gasCharacteristic.writeValue(g);
 }
 
