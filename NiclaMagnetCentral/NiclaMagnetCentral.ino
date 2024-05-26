@@ -213,7 +213,7 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
         Serial.print(" Gas: ");
         Serial.print(gas);
       }
-      if (characteristic.uuid() == String("19b10000-9001-537e-4f6c-d104768a1214")) {
+      if (characteristic.uuid() == String("107d")) {
         uint16_t state = 0;
         BLECharateristic_to_value(characteristic, &state);
         myNiclaAPI.data.severityLevel = (warning_levels)state;

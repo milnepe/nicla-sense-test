@@ -37,7 +37,9 @@ enum state { NORMAL,
 #define BLE_UUID_CARBON_DIOXIDE_SENSOR "054A"
 #define BLE_UUID_AIR_QUALITY_SENSOR "0542"
 #define BLE_UUID_GAS_SENSOR "107A"
+#define BLE_UUID_STATTE "107D"
 #define BLE_UUID_VERSION "2A28"
+
 
 #define BLE_SENSE_UUID(val) ("19b10000-" val "-537e-4f6c-d104768a1214")
 
@@ -77,7 +79,7 @@ BLEIntCharacteristic co2Characteristic(BLE_UUID_CARBON_DIOXIDE_SENSOR, BLERead);
 BLEUnsignedIntCharacteristic gasCharacteristic(BLE_UUID_GAS_SENSOR, BLERead);
 
 BLECharacteristic rgbLedCharacteristic(BLE_SENSE_UUID("8001"), BLERead | BLEWrite, 3 * sizeof(byte));  // Array of 3 bytes, RGB
-BLEUnsignedIntCharacteristic stateCharacteristic(BLE_SENSE_UUID("9001"), BLERead);
+BLEUnsignedIntCharacteristic stateCharacteristic(BLE_UUID_STATTE, BLERead);
 
 // String to calculate the local and device name
 String name;
