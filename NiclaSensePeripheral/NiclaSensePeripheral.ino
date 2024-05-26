@@ -150,8 +150,11 @@ void setup() {
 void loop() {
   static auto printTime = millis();
 
+  // Standalone or BLE connected
   if (BLE.connected()) {
     BHY2.update(100);
+  } else {
+    BHY2.update();
   }
 
   if (millis() - printTime >= 1000) {
