@@ -116,7 +116,7 @@ void NiclaMagnetDisplay::updateReadings() {
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 100, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  int pressure = _magnet->data.pressure;
+  uint32_t pressure = _magnet->data.pressure / 10.0;
   char pressure_str[] = { '0', '0', '0', '0', 'h', 'P', 'a', '\0' };
   pressure_str[0] = pressure / 100 / 10 + '0';
   pressure_str[1] = pressure / 100 % 10 + '0';
