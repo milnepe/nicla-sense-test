@@ -2,19 +2,9 @@
 Arduino Nicla Sense ME peripheral test
 
 Based on: Arduino Nicla Sense ME WEB BLE Sense dashboard demo
-
+https://docs.arduino.cc/tutorials/nicla-sense-me/web-ble-dashboard/
 
 Hardware required: https://store.arduino.cc/nicla-sense-me
-
-1) Upload this sketch to the Arduino Nano BLE sense board
-
-2) Open the following web page in the Chrome browser:
-https://arduino.github.io/ArduinoAI/NiclaSenseME-dashboard/
-
-3) Click on the green button in the web page to connect the browser to the board over BLE
-
-
-Web dashboard by D. Pajak
 
 Device sketch based on example by Sandeep Mistry and Massimo Banzi
 Sketch and web dashboard copy-fixed to be used with the Nicla Sense ME by Pablo Marquínez
