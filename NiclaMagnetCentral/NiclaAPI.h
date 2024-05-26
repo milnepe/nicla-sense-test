@@ -1,7 +1,6 @@
 #ifndef _NICLA_API_H_
 #define _NICLA_API_H_
 
-#include "magnet_config.h"
 #include "led.h"
 #include "buzzer.h"
 

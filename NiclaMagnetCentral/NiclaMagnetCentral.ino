@@ -18,6 +18,8 @@
 #include "buzzer.h"
 #include <ArduinoBLE.h>
 
+#define NICLA_NAME "NiclaSenseME-C059"
+
 // Button connections - not used yet
 #define B1_PIN 21
 #define B2_PIN 20
@@ -49,8 +51,6 @@ void setup() {
 
   Serial.println("Bluetooth® Low Energy Central - Peripheral Explorer");
 
-  // start scanning for peripherals
-  // BLE.scan();
   BLE.scanForName(NICLA_NAME);
 
   Serial.print("Starting client version: ");
