@@ -15,7 +15,30 @@ Sketch and web dashboard copy-fixed to be used with the Nicla Sense ME by Pablo 
 #include "Arduino_BHY2.h"
 #include <ArduinoBLE.h>
 
+//----------------------------------------------------------------------------------------------------------------------
+// BLE UUIDs
+//----------------------------------------------------------------------------------------------------------------------
+
 #define BLE_SENSE_UUID(val) ("19b10000-" val "-537e-4f6c-d104768a1214")
+
+//----------------------------------------------------------------------------------------------------------------------
+// BLE Data structures
+//----------------------------------------------------------------------------------------------------------------------
+
+typedef struct __attribute__((packed)) {
+  float temperature;
+  uint8_t humidity;
+  float pressure;
+  float iaq;
+  uint32_t co2;
+  uint32_t gas;
+} nicla_env_data_t;
+
+nicla_env_data_t niclaEnvData;
+
+//----------------------------------------------------------------------------------------------------------------------
+// BLE
+//----------------------------------------------------------------------------------------------------------------------
 
 const int VERSION = 0x00000000;
 
@@ -41,12 +64,6 @@ Sensor pressure(SENSOR_ID_BARO);
 Sensor gas(SENSOR_ID_GAS);
 SensorBSEC bsec(SENSOR_ID_BSEC);
 
-float temperatureValue = 0.0f;
-uint8_t humidityValue = 0;
-float pressureValue = 0.0f;
-float airQuality = 0.0f;
-uint32_t co2 = 0;
-uint32_t g = 0;  // Gas sensor
 byte rLed = 0x00;
 byte gLed = 0x00;
 byte bLed = 0x00;
@@ -151,18 +168,18 @@ void loop() {
     printTime = millis();
 
     updateReadings();
-    updateState(airQuality);
+    updateState(niclaEnvData.iaq);
     plotReadings();
   }
 }
 
 void updateReadings() {
-  temperatureValue = temperature.value();
-  humidityValue = humidity.value() + 0.5f;  //since we are truncating the float type to a uint8_t, we want to round it
-  pressureValue = pressure.value();
-  airQuality = float(bsec.iaq());
-  co2 = bsec.co2_eq();
-  g = gas.value();
+  niclaEnvData.temperature = temperature.value();
+  niclaEnvData.humidity = humidity.value() + 0.5f;  //since we are truncating the float type to a uint8_t, we want to round it
+  niclaEnvData.pressure = pressure.value();
+  niclaEnvData.iaq = float(bsec.iaq());
+  niclaEnvData.co2 = bsec.co2_eq();
+  niclaEnvData.gas = gas.value();
 }
 
 void updateState(float reading) {
@@ -184,13 +201,13 @@ void updateState(float reading) {
 
 void plotReadings() {
   Serial.print("AQI:");
-  Serial.print(airQuality);
+  Serial.print(niclaEnvData.iaq);
   Serial.print(",");
   Serial.print("CO2:");
-  Serial.print(co2);
+  Serial.print(niclaEnvData.co2);
   Serial.print(",");
   Serial.print("Gas:");
-  Serial.println(g);
+  Serial.println(niclaEnvData.gas);
 }
 
 void blePeripheralDisconnectHandler(BLEDevice central) {
@@ -203,32 +220,32 @@ void blePeripheralConnectHandler(BLEDevice central) {
 
 void onTemperatureCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
   // Read temperature from buffer
-  temperatureCharacteristic.writeValue(temperatureValue);
+  temperatureCharacteristic.writeValue(niclaEnvData.temperature);
 }
 
 void onHumidityCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
   // Read humidity from buffer
-  humidityCharacteristic.writeValue(humidityValue);
+  humidityCharacteristic.writeValue(niclaEnvData.humidity);
 }
 
 void onPressureCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
   // Read pressure from buffer
-  pressureCharacteristic.writeValue(pressureValue);
+  pressureCharacteristic.writeValue(niclaEnvData.pressure);
 }
 
 void onBsecCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
   // Read air quality from buffer
-  bsecCharacteristic.writeValue(airQuality);
+  bsecCharacteristic.writeValue(niclaEnvData.iaq);
 }
 
 void onCo2CharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
   // Read CO2 from buffer
-  co2Characteristic.writeValue(co2);
+  co2Characteristic.writeValue(niclaEnvData.co2);
 }
 
 void onGasCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
   // Read gas from buffer
-  gasCharacteristic.writeValue(g);
+  gasCharacteristic.writeValue(niclaEnvData.gas);
 }
 
 void onRgbLedCharacteristicWrite(BLEDevice central, BLECharacteristic characteristic) {
