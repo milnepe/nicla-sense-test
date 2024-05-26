@@ -207,23 +207,22 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
         Serial.print(" CO2: ");
         Serial.print(myNiclaAPI.data.co2);
       }
-      if (characteristic.uuid() == String("19b10000-9003-537e-4f6c-d104768a1214")) {
+      if (characteristic.uuid() == String("107a")) {
         uint32_t gas = 0;
         BLECharateristic_to_value(characteristic, &gas);
         Serial.print(" Gas: ");
         Serial.print(gas);
       }
+      if (characteristic.uuid() == String("19b10000-9001-537e-4f6c-d104768a1214")) {
+        uint16_t state = 0;
+        BLECharateristic_to_value(characteristic, &state);
+        myNiclaAPI.data.severityLevel = (warning_levels)state;
+        Serial.print(" State: ");
+        Serial.print(myNiclaAPI.data.severityLevel);
+      }
       Serial.print(", value 0x");
       printData(characteristic.value(), characteristic.valueLength());
     }
-  }
-  // Simple state change logic (fort testing)
-  if (myNiclaAPI.data.temperature > 34.00) {
-    myNiclaAPI.data.severityLevel = REPLACE;
-  } else if (myNiclaAPI.data.temperature > 33.00) {
-    myNiclaAPI.data.severityLevel = MONITOR;
-  } else {
-    myNiclaAPI.data.severityLevel = NORMAL;
   }
 
   Serial.println();

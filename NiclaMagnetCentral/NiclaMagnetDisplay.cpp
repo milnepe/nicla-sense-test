@@ -1,7 +1,7 @@
 #include "NiclaMagnetDisplay.h"
 
 // Nicla warning text
-static char warning_text[4][12] = { "NONE", "NORMAL", "MONITOR", "REPLACE" };
+static char warning_text[3][12] = { "NORMAL", "MONITOR", "REPLACE" };
 
 void NiclaMagnetDisplay::initDisplay(void) {
   if (_epd.Init() != 0) {
@@ -67,7 +67,7 @@ void NiclaMagnetDisplay::updateState() {
   delay(500);
   // Map background image .h files to levels
   switch (severityLevel) {
-    case NONE:
+    case NORMAL:
       _epd.SetFrameMemory_Base(RSLOGO);
       break;
     case REPLACE:
@@ -75,9 +75,6 @@ void NiclaMagnetDisplay::updateState() {
       break;
     case MONITOR:
       _epd.SetFrameMemory_Base(epd_flood_warning);
-      break;
-    case NORMAL:
-      _epd.SetFrameMemory_Base(epd_flood_alert);
       break;
     default:
       break;

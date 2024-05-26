@@ -5,13 +5,12 @@
 #include "led.h"
 #include "buzzer.h"
 
-enum warning_levels { NONE,
-                      NORMAL,
+enum warning_levels { NORMAL,
                       MONITOR,
                       REPLACE };
 
 struct niclaData {
-  warning_levels severityLevel = NONE;
+  warning_levels severityLevel = NORMAL;
   uint32_t pressure = 0;
   int16_t temperature = 0;
   uint16_t humidity = 0;
