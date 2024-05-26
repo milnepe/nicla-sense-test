@@ -173,34 +173,34 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
     characteristic.read();
 
     if (characteristic.valueLength() > 0) {
-      if (characteristic.uuid() == String("19b10000-2001-537e-4f6c-d104768a1214")) {
+      if (characteristic.uuid() == String("2a6e")) {
         int16_t temperature = 0;
         BLECharateristic_to_value(characteristic, &temperature);
         myNiclaAPI.data.temperature = temperature;  // Value passed to display
         Serial.print(" Temperature: ");
         Serial.print(myNiclaAPI.data.temperature / 100.0);
       }
-      if (characteristic.uuid() == String("19b10000-3001-537e-4f6c-d104768a1214")) {
-        uint8_t humidity = 0;
+      if (characteristic.uuid() == String("2a6f")) {
+        uint16_t humidity = 0;
         BLECharateristic_to_value(characteristic, &humidity);
         Serial.print(" Humidity: ");
-        Serial.print(humidity);
+        Serial.print(myNiclaAPI.data.humidity / 100.0);
       }
-      if (characteristic.uuid() == String("19b10000-4001-537e-4f6c-d104768a1214")) {
-        float pressure = 0;
+      if (characteristic.uuid() == String("2a6d")) {
+        uint32_t pressure = 0;
         BLECharateristic_to_value(characteristic, &pressure);
         myNiclaAPI.data.pressure = pressure;
         Serial.print(" Pressure: ");
-        Serial.print(myNiclaAPI.data.pressure);
+        Serial.print(myNiclaAPI.data.pressure / 10.0);
       }
-      if (characteristic.uuid() == String("19b10000-9001-537e-4f6c-d104768a1214")) {
-        float air_quality = 0;
+      if (characteristic.uuid() == String("0542")) {
+        uint16_t air_quality = 0;
         BLECharateristic_to_value(characteristic, &air_quality);
         myNiclaAPI.data.air_quality = air_quality;
         Serial.print(" Air Quality: ");
         Serial.print(myNiclaAPI.data.air_quality);
       }
-      if (characteristic.uuid() == String("19b10000-9002-537e-4f6c-d104768a1214")) {
+      if (characteristic.uuid() == String("054a")) {
         uint32_t co2 = 0;
         BLECharateristic_to_value(characteristic, &co2);
         myNiclaAPI.data.co2 = co2;

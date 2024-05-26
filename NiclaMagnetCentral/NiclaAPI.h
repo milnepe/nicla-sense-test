@@ -12,9 +12,10 @@ enum warning_levels { NONE,
 
 struct niclaData {
   warning_levels severityLevel = NONE;
-  float pressure = 0;
-  float temperature = 0;
-  float air_quality = 0;
+  uint32_t pressure = 0;
+  int16_t temperature = 0;
+  uint16_t humidity = 0;
+  uint16_t air_quality = 0;
   uint32_t co2 = 0;
 };
 

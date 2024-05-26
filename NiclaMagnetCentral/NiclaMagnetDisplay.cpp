@@ -119,7 +119,7 @@ void NiclaMagnetDisplay::updateReadings() {
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 100, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  int pressure = (int)(_magnet->data.pressure);
+  int pressure = _magnet->data.pressure;
   char pressure_str[] = { '0', '0', '0', '0', 'h', 'P', 'a', '\0' };
   pressure_str[0] = pressure / 100 / 10 + '0';
   pressure_str[1] = pressure / 100 % 10 + '0';
@@ -148,7 +148,7 @@ void NiclaMagnetDisplay::updateReadings() {
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 20, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  int air_quality = (int)(_magnet->data.air_quality);
+  int air_quality = (_magnet->data.air_quality);
   char air_quality_str[] = { '0', '0', '0', '0', '\0' };
   air_quality_str[0] = air_quality / 100 / 10 + '0';
   air_quality_str[1] = air_quality / 100 % 10 + '0';

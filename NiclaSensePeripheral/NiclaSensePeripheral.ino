@@ -19,6 +19,16 @@ Sketch and web dashboard copy-fixed to be used with the Nicla Sense ME by Pablo 
 // BLE UUIDs
 //----------------------------------------------------------------------------------------------------------------------
 
+#define BLE_UUID_ENVIRONMENTAL_SENSING_SERVICE "181A"
+#define BLE_UUID_DEVICE_ID_SERVICE "1800"
+#define BLE_UUID_TEMPERATURE "2A6E"
+#define BLE_UUID_HUMIDITY "2A6F"
+#define BLE_UUID_PRESSURE "2A6D"
+#define BLE_UUID_CARBON_DIOXIDE_SENSOR "054A"
+#define BLE_UUID_AIR_QUALITY_SENSOR "0542"
+#define BLE_UUID_GAS_SENSOR "107A"
+#define BLE_UUID_VERSION "2A28"
+
 #define BLE_SENSE_UUID(val) ("19b10000-" val "-537e-4f6c-d104768a1214")
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -27,9 +37,9 @@ Sketch and web dashboard copy-fixed to be used with the Nicla Sense ME by Pablo 
 
 typedef struct __attribute__((packed)) {
   int16_t temperature;
-  uint8_t humidity;
-  float pressure;
-  float iaq;
+  uint16_t humidity;
+  uint32_t pressure;
+  uint16_t iaq;
   uint32_t co2;
   uint32_t gas;
 } nicla_env_data_t;
@@ -40,20 +50,22 @@ nicla_env_data_t niclaEnvData;
 // BLE
 //----------------------------------------------------------------------------------------------------------------------
 
-const int VERSION = 0x00000000;
-
+const int VERSION = 0x00000001;
+BLEService environmentalSensingService(BLE_UUID_ENVIRONMENTAL_SENSING_SERVICE);
 BLEService service(BLE_SENSE_UUID("0000"));
 
-BLEUnsignedIntCharacteristic versionCharacteristic(BLE_SENSE_UUID("1001"), BLERead);
-BLEIntCharacteristic temperatureCharacteristic(BLE_SENSE_UUID("2001"), BLERead);
-BLEUnsignedIntCharacteristic humidityCharacteristic(BLE_SENSE_UUID("3001"), BLERead);
-BLEFloatCharacteristic pressureCharacteristic(BLE_SENSE_UUID("4001"), BLERead);
+// Must be a string - not working
+BLEUnsignedIntCharacteristic versionCharacteristic(BLE_UUID_VERSION, BLERead);
+
+BLEIntCharacteristic temperatureCharacteristic(BLE_UUID_TEMPERATURE, BLERead);
+BLEUnsignedIntCharacteristic humidityCharacteristic(BLE_UUID_HUMIDITY, BLERead);
+BLEUnsignedLongCharacteristic pressureCharacteristic(BLE_UUID_PRESSURE, BLERead);
+
+BLEUnsignedIntCharacteristic iaqCharacteristic(BLE_UUID_AIR_QUALITY_SENSOR, BLERead);
+BLEIntCharacteristic co2Characteristic(BLE_UUID_CARBON_DIOXIDE_SENSOR, BLERead);
+BLEUnsignedIntCharacteristic gasCharacteristic(BLE_UUID_GAS_SENSOR, BLERead);
 
 BLECharacteristic rgbLedCharacteristic(BLE_SENSE_UUID("8001"), BLERead | BLEWrite, 3 * sizeof(byte));  // Array of 3 bytes, RGB
-
-BLEFloatCharacteristic bsecCharacteristic(BLE_SENSE_UUID("9001"), BLERead);
-BLEIntCharacteristic co2Characteristic(BLE_SENSE_UUID("9002"), BLERead);
-BLEUnsignedIntCharacteristic gasCharacteristic(BLE_SENSE_UUID("9003"), BLERead);
 
 // String to calculate the local and device name
 String name;
@@ -120,14 +132,15 @@ void setup() {
 
   BLE.setLocalName(name.c_str());
   BLE.setDeviceName(name.c_str());
+  BLE.setAdvertisedService(environmentalSensingService);
   BLE.setAdvertisedService(service);
 
   // Add all the previously defined Characteristics
-  service.addCharacteristic(temperatureCharacteristic);
-  service.addCharacteristic(humidityCharacteristic);
-  service.addCharacteristic(pressureCharacteristic);
+  environmentalSensingService.addCharacteristic(temperatureCharacteristic);
+  environmentalSensingService.addCharacteristic(humidityCharacteristic);
+  environmentalSensingService.addCharacteristic(pressureCharacteristic);
   service.addCharacteristic(versionCharacteristic);
-  service.addCharacteristic(bsecCharacteristic);
+  service.addCharacteristic(iaqCharacteristic);
   service.addCharacteristic(co2Characteristic);
   service.addCharacteristic(gasCharacteristic);
   service.addCharacteristic(rgbLedCharacteristic);
@@ -142,7 +155,7 @@ void setup() {
   temperatureCharacteristic.setEventHandler(BLERead, onTemperatureCharacteristicRead);
   humidityCharacteristic.setEventHandler(BLERead, onHumidityCharacteristicRead);
   pressureCharacteristic.setEventHandler(BLERead, onPressureCharacteristicRead);
-  bsecCharacteristic.setEventHandler(BLERead, onBsecCharacteristicRead);
+  iaqCharacteristic.setEventHandler(BLERead, onIaqCharacteristic);
   co2Characteristic.setEventHandler(BLERead, onCo2CharacteristicRead);
   gasCharacteristic.setEventHandler(BLERead, onGasCharacteristicRead);
 
@@ -150,6 +163,7 @@ void setup() {
 
   versionCharacteristic.setValue(VERSION);
 
+  BLE.addService(environmentalSensingService);
   BLE.addService(service);
   BLE.advertise();
 }
@@ -177,9 +191,15 @@ void updateReadings() {
   // BLE defines Temperature UUID 2A6E Type sint16 ( see XML links )
   // Unit is in degrees Celsius with a resolution of 0.01 degrees Celsius
   niclaEnvData.temperature = round(temperature.value() * 100.0);
-  niclaEnvData.humidity = humidity.value() + 0.5f;  //since we are truncating the float type to a uint8_t, we want to round it
-  niclaEnvData.pressure = pressure.value();
-  niclaEnvData.iaq = float(bsec.iaq());
+
+  // BLE defines Humidity UUID 2A6F Type uint16
+  // Unit is in percent with a resolution of 0.01 percent
+  niclaEnvData.humidity = round(humidity.value() * 100.0);
+
+  // BLE defines Pressure UUID 2A6D Type uint32
+  // Unit is in Pascal with a resolution of 0.1 Pa
+  niclaEnvData.pressure = round(pressure.value() * 10.0);
+  niclaEnvData.iaq = bsec.iaq();
   niclaEnvData.co2 = bsec.co2_eq();
   niclaEnvData.gas = gas.value();
 }
@@ -212,7 +232,13 @@ void plotReadings() {
   Serial.print(niclaEnvData.gas);
   Serial.print(",");
   Serial.print("Temperature:");
-  Serial.println(niclaEnvData.temperature / 100.0);
+  Serial.print(niclaEnvData.temperature / 100.0);
+  Serial.print(",");
+  Serial.print("Humidity:");
+  Serial.print(niclaEnvData.humidity / 100.0);
+  Serial.print(",");
+  Serial.print("Pressure:");
+  Serial.println(niclaEnvData.pressure / 10.0);
 }
 
 void blePeripheralDisconnectHandler(BLEDevice central) {
@@ -238,9 +264,9 @@ void onPressureCharacteristicRead(BLEDevice central, BLECharacteristic character
   pressureCharacteristic.writeValue(niclaEnvData.pressure);
 }
 
-void onBsecCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
+void onIaqCharacteristic(BLEDevice central, BLECharacteristic characteristic) {
   // Read air quality from buffer
-  bsecCharacteristic.writeValue(niclaEnvData.iaq);
+  iaqCharacteristic.writeValue(niclaEnvData.iaq);
 }
 
 void onCo2CharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
