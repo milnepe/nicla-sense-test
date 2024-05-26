@@ -174,11 +174,11 @@ void exploreCharacteristic(BLECharacteristic characteristic) {
 
     if (characteristic.valueLength() > 0) {
       if (characteristic.uuid() == String("19b10000-2001-537e-4f6c-d104768a1214")) {
-        float temperature = 0;
+        int16_t temperature = 0;
         BLECharateristic_to_value(characteristic, &temperature);
         myNiclaAPI.data.temperature = temperature;  // Value passed to display
         Serial.print(" Temperature: ");
-        Serial.print(myNiclaAPI.data.temperature);
+        Serial.print(myNiclaAPI.data.temperature / 100.0);
       }
       if (characteristic.uuid() == String("19b10000-3001-537e-4f6c-d104768a1214")) {
         uint8_t humidity = 0;

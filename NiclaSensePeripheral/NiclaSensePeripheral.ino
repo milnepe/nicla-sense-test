@@ -26,7 +26,7 @@ Sketch and web dashboard copy-fixed to be used with the Nicla Sense ME by Pablo 
 //----------------------------------------------------------------------------------------------------------------------
 
 typedef struct __attribute__((packed)) {
-  float temperature;
+  int16_t temperature;
   uint8_t humidity;
   float pressure;
   float iaq;
@@ -45,7 +45,7 @@ const int VERSION = 0x00000000;
 BLEService service(BLE_SENSE_UUID("0000"));
 
 BLEUnsignedIntCharacteristic versionCharacteristic(BLE_SENSE_UUID("1001"), BLERead);
-BLEFloatCharacteristic temperatureCharacteristic(BLE_SENSE_UUID("2001"), BLERead);
+BLEIntCharacteristic temperatureCharacteristic(BLE_SENSE_UUID("2001"), BLERead);
 BLEUnsignedIntCharacteristic humidityCharacteristic(BLE_SENSE_UUID("3001"), BLERead);
 BLEFloatCharacteristic pressureCharacteristic(BLE_SENSE_UUID("4001"), BLERead);
 
@@ -174,7 +174,9 @@ void loop() {
 }
 
 void updateReadings() {
-  niclaEnvData.temperature = temperature.value();
+  // BLE defines Temperature UUID 2A6E Type sint16 ( see XML links )
+  // Unit is in degrees Celsius with a resolution of 0.01 degrees Celsius
+  niclaEnvData.temperature = round(temperature.value() * 100.0);
   niclaEnvData.humidity = humidity.value() + 0.5f;  //since we are truncating the float type to a uint8_t, we want to round it
   niclaEnvData.pressure = pressure.value();
   niclaEnvData.iaq = float(bsec.iaq());
@@ -207,7 +209,10 @@ void plotReadings() {
   Serial.print(niclaEnvData.co2);
   Serial.print(",");
   Serial.print("Gas:");
-  Serial.println(niclaEnvData.gas);
+  Serial.print(niclaEnvData.gas);
+  Serial.print(",");
+  Serial.print("Temperature:");
+  Serial.println(niclaEnvData.temperature / 100.0);
 }
 
 void blePeripheralDisconnectHandler(BLEDevice central) {

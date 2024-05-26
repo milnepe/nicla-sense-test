@@ -133,7 +133,8 @@ void NiclaMagnetDisplay::updateReadings() {
   _epd.SetFrameMemory_Partial(_paint.GetImage(), 0, 60, _paint.GetWidth(), _paint.GetHeight());
 
   _paint.Clear(UNCOLORED);
-  int temp = (int)(_magnet->data.temperature * 100);
+  // int temp = (int)(_magnet->data.temperature * 100);
+  int temp = _magnet->data.temperature;
   char temperature_str[] = { '0', '0', '.', '0', '0', 'C', '\0' };
   temperature_str[0] = temp / 100 / 10 + '0';
   temperature_str[1] = temp / 100 % 10 + '0';
