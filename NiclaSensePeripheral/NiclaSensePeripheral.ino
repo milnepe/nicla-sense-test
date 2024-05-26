@@ -15,6 +15,16 @@ Sketch and web dashboard copy-fixed to be used with the Nicla Sense ME by Pablo 
 #include "Arduino_BHY2.h"
 #include <ArduinoBLE.h>
 
+// Standard IAQ levels
+int GOOD = 50;
+int MODERATE = 100;
+int UNHEALTHY = 200;
+
+// System state
+enum state { NORMAL,
+             MONITOR,
+             REPLACE };
+
 //----------------------------------------------------------------------------------------------------------------------
 // BLE UUIDs
 //----------------------------------------------------------------------------------------------------------------------
@@ -42,6 +52,7 @@ typedef struct __attribute__((packed)) {
   uint16_t iaq;
   uint32_t co2;
   uint32_t gas;
+  uint16_t state;
 } nicla_env_data_t;
 
 nicla_env_data_t niclaEnvData;
@@ -66,6 +77,7 @@ BLEIntCharacteristic co2Characteristic(BLE_UUID_CARBON_DIOXIDE_SENSOR, BLERead);
 BLEUnsignedIntCharacteristic gasCharacteristic(BLE_UUID_GAS_SENSOR, BLERead);
 
 BLECharacteristic rgbLedCharacteristic(BLE_SENSE_UUID("8001"), BLERead | BLEWrite, 3 * sizeof(byte));  // Array of 3 bytes, RGB
+BLEUnsignedIntCharacteristic stateCharacteristic(BLE_SENSE_UUID("9001"), BLERead);
 
 // String to calculate the local and device name
 String name;
@@ -75,19 +87,6 @@ Sensor humidity(SENSOR_ID_HUM);
 Sensor pressure(SENSOR_ID_BARO);
 Sensor gas(SENSOR_ID_GAS);
 SensorBSEC bsec(SENSOR_ID_BSEC);
-
-byte rLed = 0x00;
-byte gLed = 0x00;
-byte bLed = 0x00;
-
-// State represented by RGB index
-byte NORMAL[] = { 0x00, 0xFF, 0x00 };   // Green
-byte MONITOR[] = { 0xFF, 0xFF, 0x00 };  // Yellow
-byte REPLACE[] = { 0xFF, 0x00, 0x00 };  // Red
-
-int GOOD = 50;
-int MODERATE = 100;
-int UNHEALTHY = 200;
 
 void setup() {
   Serial.begin(115200);
@@ -144,6 +143,7 @@ void setup() {
   service.addCharacteristic(co2Characteristic);
   service.addCharacteristic(gasCharacteristic);
   service.addCharacteristic(rgbLedCharacteristic);
+  service.addCharacteristic(stateCharacteristic);
 
   // Disconnect event handler
   BLE.setEventHandler(BLEDisconnected, blePeripheralDisconnectHandler);
@@ -158,6 +158,7 @@ void setup() {
   iaqCharacteristic.setEventHandler(BLERead, onIaqCharacteristic);
   co2Characteristic.setEventHandler(BLERead, onCo2CharacteristicRead);
   gasCharacteristic.setEventHandler(BLERead, onGasCharacteristicRead);
+  stateCharacteristic.setEventHandler(BLERead, onStateCharacteristicRead);
 
   rgbLedCharacteristic.setEventHandler(BLEWritten, onRgbLedCharacteristicWrite);
 
@@ -182,13 +183,14 @@ void loop() {
     printTime = millis();
 
     updateReadings();
+    // Drive state using IAQ value
     updateState(niclaEnvData.iaq);
     plotReadings();
   }
 }
 
 void updateReadings() {
-  // BLE defines Temperature UUID 2A6E Type sint16 ( see XML links )
+  // BLE defines Temperature UUID 2A6E Type sint16
   // Unit is in degrees Celsius with a resolution of 0.01 degrees Celsius
   niclaEnvData.temperature = round(temperature.value() * 100.0);
 
@@ -204,25 +206,23 @@ void updateReadings() {
   niclaEnvData.gas = gas.value();
 }
 
-void updateState(float reading) {
+// Compares value of reading agains defined levels
+// to set the state and LED on Nicla
+void updateState(uint16_t reading) {
   if (reading > MODERATE) {
-    rLed = REPLACE[0];
-    gLed = REPLACE[1];
-    bLed = REPLACE[2];
+    niclaEnvData.state = REPLACE;
+    nicla::leds.setColor(red);
   } else if (reading > GOOD) {
-    rLed = MONITOR[0];
-    gLed = MONITOR[1];
-    bLed = MONITOR[2];
+    niclaEnvData.state = MONITOR;
+    nicla::leds.setColor(blue);
   } else {  // NORMAL
-    rLed = NORMAL[0];
-    gLed = NORMAL[1];
-    bLed = NORMAL[2];
+    niclaEnvData.state = NORMAL;
+    nicla::leds.setColor(green);
   }
-  nicla::leds.setColor(rLed, gLed, bLed);
 }
 
 void plotReadings() {
-  Serial.print("AQI:");
+  Serial.print("IAQ:");
   Serial.print(niclaEnvData.iaq);
   Serial.print(",");
   Serial.print("CO2:");
@@ -238,7 +238,10 @@ void plotReadings() {
   Serial.print(niclaEnvData.humidity / 100.0);
   Serial.print(",");
   Serial.print("Pressure:");
-  Serial.println(niclaEnvData.pressure / 10.0);
+  Serial.print(niclaEnvData.pressure / 10.0);
+  Serial.print(",");
+  Serial.print("State:");
+  Serial.println(niclaEnvData.state);
 }
 
 void blePeripheralDisconnectHandler(BLEDevice central) {
@@ -277,6 +280,11 @@ void onCo2CharacteristicRead(BLEDevice central, BLECharacteristic characteristic
 void onGasCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
   // Read gas from buffer
   gasCharacteristic.writeValue(niclaEnvData.gas);
+}
+
+void onStateCharacteristicRead(BLEDevice central, BLECharacteristic characteristic) {
+  // Read state from buffer
+  stateCharacteristic.writeValue(niclaEnvData.state);
 }
 
 void onRgbLedCharacteristicWrite(BLEDevice central, BLECharacteristic characteristic) {
