@@ -4,10 +4,7 @@
   Install the following libraries using the Arduino Libary Manager:
   ArduinoBLE https://github.com/arduino-libraries/ArduinoBLE
 
-  Author: Peter Milne
-  Date: 22 March 2023
-
-  Copyright 2022 Peter Milne
+  Copyright 2024 Peter Milne
   Released under GNU GENERAL PUBLIC LICENSE
   Version 3, 29 June 2007
 */
@@ -28,7 +25,7 @@
 #define B5_PIN 17
 #define B6_PIN 16
 
-const char *soft_version = "0.1.0";
+const char *soft_version = "0.1.1";
 
 NiclaAPI myNiclaAPI = NiclaAPI();
 

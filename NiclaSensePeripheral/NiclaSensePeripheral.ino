@@ -9,6 +9,15 @@ Hardware required: https://store.arduino.cc/nicla-sense-me
 Device sketch based on example by Sandeep Mistry and Massimo Banzi
 Sketch and web dashboard copy-fixed to be used with the Nicla Sense ME by Pablo Marquínez
 
+Bluetooth SIG spec https://www.bluetooth.com/specifications/assigned-numbers/
+
+
+  Author: Peter Milne
+
+  Copyright 2024 Peter Milne
+  Released under GNU GENERAL PUBLIC LICENSE
+  Version 3, 29 June 2007
+
 */
 
 #include "Nicla_System.h"
