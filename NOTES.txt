@@ -16,3 +16,9 @@ https://github.com/arduino-libraries/Arduino_BHY2Host
 2. Edit src/Arduino_BHY2Host.h - add definition for ARDUINO_GIGA
 #if defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_SAMD_MKRWIFI1010) || defined(ARDUINO_GIGA)
 
+3. Flash Nicla with App.ino - includes adaption for use with BLE with serial debug enabled
+https://github.com/milnepe/nicla-sense-test/tree/main/App
+
+4. Flash Giga with BHY2HostIAQ.ino - displays IAQ values over BLE in serial monitor
+https://github.com/milnepe/nicla-sense-test/tree/main/BHY2HostIAQ
+
