@@ -1,0 +1,18 @@
+ESLOV
+
+Flash Nicla with App
+
+Flash H7 with BHY2Host.ino
+
+  BHY2Host.begin(false, NICLA_VIA_ESLOV);
+  
+Reboot and open serial
+
+Giga with BLE
+
+1. Install .zip from this fixes bug in sensors/DataParser.h so data values display correctly:
+https://github.com/arduino-libraries/Arduino_BHY2Host
+
+2. Edit src/Arduino_BHY2Host.h - add definition for ARDUINO_GIGA
+#if defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_SAMD_MKRWIFI1010) || defined(ARDUINO_GIGA)
+
